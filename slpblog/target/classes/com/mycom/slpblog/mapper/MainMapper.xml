@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mycom.slpblog.mapper.MainMapper">
+	
+	<!-- 회원 관리 -->
+	<select id="loginProcess" parameterType="String" resultType="int">
+		SELECT count(0) cnt FROM member
+		WHERE user_id = #{0} AND password = #{1}
+	</select>
+	
+	<select id="idCheck" parameterType="MemberVO" resultType="int">
+		SELECT count(*) FROM member 
+		WHERE user_id = #{userId}
+	</select>
+	
+	<insert id="joinProcess" parameterType="MemberVO">
+		INSERT INTO member(name, user_id, password, profile_name) 
+		VALUES(#{name}, #{userId}, #{password}, null) 
+	</insert>
+	
+	
+	<!-- 게시판 -->
+	
+	<select id="cntContent" parameterType="String" resultType="int">
+		SELECT count(*) FROM board 
+		<if test='value != null'>
+     	WHERE (board_title LIKE  #{value} OR board_content LIKE  #{value} )
+     	</if>
+	</select>
+	
+	<!-- column은 DB 칼럼명, property는 key값 -->
+	<resultMap type="HashMap" id="boardMap">
+		<id column="board_no" property="boardNo" />
+		<id column="user_id" property="userId" />
+		<id column="board_title" property="boardTitle" />
+		<id column="board_date" property="boardDate" />
+		<id column="board_hit" property="boardHit" />
+		<id column="replyCount" property="replyCount" />
+		<id column="profile_name" property="profileName" />
+	</resultMap>
+	
+	<select id="viewBoard" parameterType="PageVO" resultMap="boardMap">
+		SELECT x.RN, x.board_no, x.user_id, x.board_title, x.board_date, x.replyCount, x.board_hit, member.profile_name 
+		FROM 
+		(
+			SELECT @rownum := @rownum+1 AS RN, a.board_no, a.user_id, a.board_title, a.board_date, a.replyCount, a.board_hit  
+			FROM
+			(
+				SELECT board_no, user_id, board_title, board_date, board_hit, 
+				(
+					SELECT count(0) FROM reply WHERE board_no = b.board_no
+				) AS replyCount
+				FROM board b
+				<if test='skey != null'>
+     			WHERE (board_title LIKE #{skey}  OR board_content LIKE #{skey} )
+     			</if>
+				ORDER BY board_no DESC
+			) a, (SELECT @rownum :=0) AS R 
+		) x LEFT JOIN member ON x.user_id = member.user_id 
+		WHERE RN BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="writeProcess" parameterType="boardVO">
+		INSERT INTO board(board_title, board_content, user_id, board_file1, board_file2)
+		VALUES(#{boardTitle}, #{boardContent}, #{userId}, #{boardFile1, jdbcType=VARCHAR}, #{boardFile2, jdbcType=VARCHAR})
+	</select>
+
+	<select id="viewContent" parameterType="int" resultType="boardVO">
+		SELECT board_no, user_id, board_title, board_content, board_date, board_file1, board_file2, board_hit 
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<update id="updateProcess" parameterType="boardVO">
+		UPDATE board SET board_title = #{boardTitle}, board_content = #{boardContent}, board_file1 = #{boardFile1, jdbcType=VARCHAR}, board_file2 = #{boardFile2, jdbcType=VARCHAR}
+		WHERE board_no = #{boardNo}
+	</update>
+
+	<delete id="deleteProcess">
+		DELETE FROM board
+		WHERE board_no = #{boardNo}
+	</delete>
+	
+	<update id="updateHit" parameterType="int">
+		UPDATE board SET board_hit = board_hit + 1 
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<!-- board like -->
+	
+	<update id="upLike" parameterType="int">
+		update board set board_like = board_like + 1 
+		where board_no = #{boardNo}
+	</update>
+	
+	<update id="downLike" parameterType="int">
+		update board set board_like = board_like - 1 
+		where board_no = #{boardNo}
+	</update>
+	
+	<insert id="insertLikeInfo" parameterType="hashmap">
+		insert into likeCheck(board_no, user_id) 
+		values(#{boardNo}, #{userId})
+	</insert>
+	
+	<delete id="deleteLikeInfo" parameterType="hashmap">
+		delete from likeCheck 
+		where board_no = #{boardNo} and user_id = #{userId}
+	</delete>
+	
+	<select id="checkLike" parameterType="hashmap" resultType="int">
+		select count(*) from likeCheck 
+		where board_no = #{boardNo} and user_id = #{userId}
+	</select>
+	
+	<select id="likeCnt" parameterType="int" resultType="int">
+		select board_like from board 
+		where board_no = #{boardNo}
+	</select>
+	
+	<!-- 댓글(Reply) 관리 -->
+	<select id="viewReply" resultMap="replyMap">
+		SELECT reply_no, reply_writer, reply_content, reply_date, member.profile_name 
+		FROM reply LEFT JOIN member ON reply.reply_writer = member.user_id 
+		WHERE board_no = #{boardNo} ORDER BY reply_no ASC
+	</select>
+	
+	<resultMap type="HashMap" id="replyMap">
+		<id column="reply_no" property="replyNo" />
+		<id column="reply_writer" property="replyWriter" />
+		<id column="reply_content" property="replyContent" />
+		<id column="reply_date" property="replyDate" />
+		<id column="profile_name" property="profileName" />
+	</resultMap>
+	
+	<select id="writeReply">
+		INSERT INTO reply(board_no, reply_writer, reply_content)
+		VALUES(#{boardNo}, #{replyWriter}, #{replyContent})
+	</select>
+	
+	<update id="updateReply">
+		UPDATE reply SET reply_content = #{replyContent, jdbcType=VARCHAR}
+		WHERE reply_no = #{replyNo}
+	</update>
+	
+	<delete id="deleteReply">
+		DELETE FROM reply
+		WHERE reply_no = #{replyNo}
+	</delete>
+	
+	<delete id="deleteAllReplies">
+		DELETE FROM reply
+		WHERE board_no = #{boardNo}
+	</delete>
+	
+	<!-- profile -->
+	<update id="updateProfile" parameterType="String">
+		update member set profile_name = #{1}
+		where user_id = #{0}
+	</update>
+	
+	<select id="selectProfile" parameterType="String" resultType="String">
+		select profile_name from member 
+		where user_id = #{userId}
+	</select>
+	
+	<!-- ranking -->
+	<select id="likeRank" resultMap="likeRankMap">
+		select *, member.profile_name 
+		from (
+			select user_id, board_title, board_like, board_no, dense_rank() over (order by board_like desc) as ranking
+			from board
+		) ranked LEFT JOIN member ON ranked.user_id = member.user_id 
+		<![CDATA[where ranked.ranking < 5]]>
+	</select>
+	
+	<resultMap type="HashMap" id="likeRankMap">
+		<id column="user_id" property="userId" />
+		<id column="board_title" property="boardTitle" />
+		<id column="board_like" property="boardLike" />
+		<id column="board_no" property="boardNo" />
+		<id column="profile_name" property="profileName" />
+	</resultMap>
+	
+</mapper>

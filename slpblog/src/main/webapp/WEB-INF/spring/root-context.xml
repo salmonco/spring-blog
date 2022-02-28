@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<!-- jdbc모듈을 이용하여 dataSource추가하기 -->
+	<!-- DataSource는 JDBC의 커넥션을 처리하는 기능을 가지고 있어 DB와 연동 작업에 반드시 필요 -->
+	<!-- bean의 id는 스프링 내에서 특정한 객체(빈)을 찾기 위한 이름 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+	    <property name="url" value="jdbc:mysql://127.0.0.1:3306/study?characterEncoding=UTF8&amp;allowPublicKeyRetrieval=true&amp;useSSL=false"></property>
+	    <property name="username" value="root"></property>   
+	    <property name="password" value="mysql"></property>
+	</bean>
+	
+	<mybatis-spring:scan base-package="com.mycom.slpblog.mapper"/>
+
+	<!-- Mybatis와 스프링 연동을 하기위해선 SqlSessionFactory가 있어야 함-->
+	<!-- SqlSessionFactory는 DB와의 연결과 SQL의 실행을 하기위해 필요한 객체 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <!-- 데이터베이스 연결정보 bean 설정 -->
+	    <property name="dataSource" ref="dataSource"></property>
+	    	
+	    <!-- 실행할 sql 명령이 저장된 xml 파일로 경로 설정 -->
+	    <!-- <property name="mapperLocations" value="classpath:mapper/**/*.xml"></property> -->
+	    	
+	    <!-- mybatis-config.xml이 스프링 시작될 때 같이 실행되도록 설정 -->
+	    <property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+	        
+	    <!-- mybatis에서 resultType과 parameterType 사용시 bean 객체를 사용할려면 패키지 경로 및 bean 클래스명까지 입력해야 함.
+	        하지만 alias 처리를 해주면 bean 클래스명만 입력하면 되므로 조금 간소해짐 -->
+	    <property name="typeAliasesPackage" value="com.mycom.slpblog.vo" />
+	</bean>
+	
+	<!-- sqlSessionFactory(데이터베이스 연결 정보와 xml 파일의 경로) bean을 참조해서 mybatis mapper를 설정하는 bean -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+		
+</beans>

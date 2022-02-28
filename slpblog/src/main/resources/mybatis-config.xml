@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mybatis 설정 -->
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<!-- 컬럼명은 카멜케이스로 만들 수 없기 때문에 언더바를 사용함. 하지만 jsp 화면단에서 이 컬럼명으로 값을 불러 올 수 없음.
+	따라서 스프링에서 언더바를 사용한 컬럼명을 사용해야 할 때에는, 컬럼명에 언더바가 있을 경우 카멜케이스로 읽어주는 mapUnderscoreToCamelCase를 사용함.
+	즉 컬럼명이 view_cnt인 경우 jsp 화면단에서 이 값을 쓸 때에는 viewCnt로 쓰면 됨 -> 코드의 가독성을 높이기 위함 -->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	
+	<!-- Alias(별칭) 클래스 단위 등록 -->
+	<!-- <typeAliases>
+		<typeAlias type="com.mycom.test.vo.MemberVO" alias="MemberVO"/>
+	</typeAliases> -->
+	
+	<!-- Alias(별칭) 패키지 단위 등록 -->
+	<!-- <typeAliases>
+	  <package name="com.mycom.test.vo"/>
+	</typeAliases> -->
+	
+</configuration>
