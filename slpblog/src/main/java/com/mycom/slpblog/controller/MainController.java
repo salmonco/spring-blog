@@ -57,9 +57,7 @@ public class MainController
    * @param response
    * @throws IOException
    */
-  public void alert(String notice, HttpServletResponse response)
-    throws IOException
-  {
+  public void alert(String notice, HttpServletResponse response) throws IOException {
     response.setCharacterEncoding("UTF-8");
     PrintWriter out = response.getWriter();
     out.println("<script type='text/javascript'>");
@@ -73,8 +71,7 @@ public class MainController
    * @param session
    * @return
    */
-  public boolean loginCheck(HttpSession session)
-  {
+  public boolean loginCheck(HttpSession session) {
     if (session.getAttribute("userId") == null) {
       return false;
     }
@@ -86,8 +83,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = {"/", "home.do"})
-  public String home()
-  {
+  public String home() {
     return "home";
   }
 
@@ -96,8 +92,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "login.do")
-  public String login()
-  {
+  public String login() {
     return "login";
   }
 
@@ -110,9 +105,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "loginProcess.do", method = RequestMethod.POST)
-  public String loginProcess(HttpServletRequest req, HttpServletResponse response, HttpSession session)
-    throws IOException
-  {
+  public String loginProcess(HttpServletRequest req, HttpServletResponse response, 
+		  HttpSession session) throws IOException {
     response.setCharacterEncoding("UTF-8");
 
     String userId = req.getParameter("userId");
@@ -134,8 +128,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "logout.do")
-  public String logout(HttpServletRequest req)
-  {
+  public String logout(HttpServletRequest req) {
     HttpSession session = req.getSession();
     session.invalidate();
     return "home";
@@ -146,8 +139,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "join.do")
-  public String join()
-  {
+  public String join() {
     return "join";
   }
 
@@ -158,8 +150,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "joinProcess.do", method = RequestMethod.POST)
-  public String joinProcess(HttpServletRequest req, HttpServletResponse response)
-  {
+  public String joinProcess(HttpServletRequest req, HttpServletResponse response) {
     try {
       response.setCharacterEncoding("UTF-8");
       MemberVO vo = new MemberVO();
@@ -201,9 +192,8 @@ public class MainController
    * @throws Exception
    */
   @RequestMapping(value = {"index.do", "search.do"})
-  public String board(PageVO pagevo, Model model, String nowPage, String cntPerPage, HttpServletRequest req)
-    throws Exception
-  {
+  public String board(PageVO pagevo, Model model, String nowPage, String cntPerPage, 
+		  HttpServletRequest req) throws Exception {
     String skey = req.getParameter("skey");
     if (skey != null) skey = "%" + skey + "%";
 
@@ -239,9 +229,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "write.do")
-  public String writePage(HttpServletResponse response, HttpSession session)
-    throws IOException
-  {
+  public String writePage(HttpServletResponse response, HttpSession session) 
+		  throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -261,9 +250,8 @@ public class MainController
    * @throws Exception
    */
   @RequestMapping(value = "writeProcess.do", method = RequestMethod.POST)
-  public String writeProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
-    throws Exception
-  {
+  public String writeProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, 
+		  MultipartHttpServletRequest multipartRequest) throws Exception {
     response.setCharacterEncoding("UTF-8");
 
     if (Boolean.parseBoolean(req.getParameter("editorStatus"))) {
@@ -305,9 +293,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "viewContent.do", method = RequestMethod.GET)
-  public String viewContent(Model model, int boardNo, HttpSession session, HttpServletResponse response, HttpServletRequest req)
-    throws IOException
-  {
+  public String viewContent(Model model, int boardNo, HttpSession session, 
+		  HttpServletResponse response, HttpServletRequest req) throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -361,16 +348,14 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "updateContent.do", method = RequestMethod.GET)
-  public String updateContent(Model model, int boardNo)
-  {
+  public String updateContent(Model model, int boardNo) {
     model.addAttribute("content", mainService.viewContent(boardNo));
     return "update";
   }
 
   @RequestMapping(value = "updateProcess.do", method = RequestMethod.POST)
-  public String updateProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
-    throws Exception
-  {
+  public String updateProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, 
+		  MultipartHttpServletRequest multipartRequest) throws Exception {
     response.setCharacterEncoding("UTF-8");
 
     if (Boolean.parseBoolean(req.getParameter("editorStatus"))) {
@@ -410,8 +395,7 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "deleteProcess.do", method = RequestMethod.GET)
-  public String deleteProcess(int boardNo, HttpSession session) throws IOException
-  {
+  public String deleteProcess(int boardNo, HttpSession session) throws IOException {
     mainService.deleteProcess(boardNo);
     
     String userId = (String)session.getAttribute("userId");
@@ -432,8 +416,7 @@ public class MainController
    */
   @ResponseBody
   @RequestMapping(value = "boardLike.do", method = RequestMethod.POST)
-  public HashMap<String, Object> boardLike(int boardNo, String userId)
-  {
+  public HashMap<String, Object> boardLike(int boardNo, String userId) {
     HashMap<String, Object> hashmap = new HashMap<String, Object>();
     hashmap.put("boardNo", boardNo);
     hashmap.put("userId", userId);
@@ -468,9 +451,8 @@ public class MainController
    */
   @RequestMapping(value = "fileUpload.do", method = RequestMethod.POST)
   @ResponseBody
-  public String fileUploadFromCKEditor(HttpServletRequest req, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
-    throws Exception
-  {
+  public String fileUploadFromCKEditor(HttpServletRequest req, HttpServletResponse response, 
+		  MultipartHttpServletRequest multipartRequest) throws Exception {
     PrintWriter printWriter = null;
 
     response.setCharacterEncoding("utf-8");
@@ -514,8 +496,8 @@ public class MainController
    * @param response
    */
   @RequestMapping(value = "fileDownload.do")
-  public void ckSubmit(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response)
-  {
+  public void ckSubmit(@RequestParam("fileName") String fileName, HttpServletRequest request, 
+		  HttpServletResponse response) {
     File file = FileUtilities.getDownloadFile(fileUploadPath, fileName);
     try {
       byte[] data = FileUtils.readFileToByteArray(file);
@@ -546,9 +528,8 @@ public class MainController
    * @throws Exception
    */
   @RequestMapping(value = "writeReply.do", method = RequestMethod.POST)
-  public String writeReply(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpSession session, HttpServletResponse response, int boardNo)
-    throws Exception
-  {
+  public String writeReply(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpSession session, 
+		  HttpServletResponse response, int boardNo) throws Exception {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -577,9 +558,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "updateReply.do", method = RequestMethod.GET)
-  public String updateReply(Model model, HttpSession session, HttpServletRequest req, HttpServletResponse response, int boardNo)
-    throws IOException
-  {
+  public String updateReply(Model model, HttpSession session, HttpServletRequest req, 
+		  HttpServletResponse response, int boardNo) throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -618,9 +598,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "updateReplyPro.do", method = RequestMethod.POST)
-  public String updateReplyPro(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpServletResponse response, Locale locale, Model model, int replyNo)
-    throws IOException
-  {
+  public String updateReplyPro(RedirectAttributes redirectAttributes, HttpServletRequest req, 
+		  HttpServletResponse response, Locale locale, Model model, int replyNo) throws IOException {
     ReplyVO vo = new ReplyVO();
     vo.setReplyNo(Integer.parseInt(req.getParameter("replyNo")));
     vo.setReplyContent(req.getParameter("updateReply"));
@@ -644,9 +623,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "deleteReply.do", method = RequestMethod.GET)
-  public String deleteReply(HttpSession session, RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest req, Model model, int boardNo)
-    throws IOException
-  {
+  public String deleteReply(HttpSession session, RedirectAttributes redirectAttributes, 
+		  HttpServletResponse response, HttpServletRequest req, Model model, int boardNo) throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -671,9 +649,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "profile.do")
-  public String profile(@RequestParam("userId") String userId, HttpServletResponse response, HttpSession session, Model model)
-    throws IOException
-  {
+  public String profile(@RequestParam("userId") String userId, HttpServletResponse response, 
+		  HttpSession session, Model model) throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -697,9 +674,8 @@ public class MainController
    * @throws Exception
    */
   @RequestMapping(value = "profileUpload.do", method = RequestMethod.POST)
-  public String profileUpload(HttpServletRequest req, RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest)
-    throws Exception
-  {
+  public String profileUpload(HttpServletRequest req, RedirectAttributes redirectAttributes, 
+		  MultipartHttpServletRequest multipartRequest) throws Exception {
     String userId = req.getParameter("userId");
     try
     {
@@ -724,8 +700,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "getProfileName.do", method = RequestMethod.POST)
-  public String getProfileName(String userId, Model model)
-  {
+  public String getProfileName(String userId, Model model) {
     String profileName = mainService.selectProfile(userId);
 
     model.addAttribute("profileName", profileName);
@@ -742,8 +717,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "chat.do")
-  public String chat(HttpSession session, HttpServletResponse response, Model model) throws IOException
-  {
+  public String chat(HttpSession session, HttpServletResponse response, Model model) 
+		  throws IOException {
     response.setCharacterEncoding("UTF-8");
     if (!loginCheck(session)) {
       alert("로그인이 필요합니다.", response);
@@ -766,9 +741,8 @@ public class MainController
    * @throws IOException
    */
   @RequestMapping(value = "report.do", method = RequestMethod.POST)
-  public String report(String reportDate, String reportTarget, String reportTitle, String reportContent, HttpServletRequest req)
-    throws IOException
-  {
+  public String report(String reportDate, String reportTarget, String reportTitle, 
+		  String reportContent, HttpServletRequest req) throws IOException {
     String path = "D:\\jisu\\report.xlsx";
     FileInputStream fis = new FileInputStream(path);
 
@@ -810,8 +784,7 @@ public class MainController
    * @return
    */
   @RequestMapping(value = "rank.do")
-  public String rank(Model model)
-  {
+  public String rank(Model model) {
     List<Map<String, Object>> likeRank = (List<Map<String, Object>>) mainService.likeRank();
     model.addAttribute("likeRank", likeRank);
 
