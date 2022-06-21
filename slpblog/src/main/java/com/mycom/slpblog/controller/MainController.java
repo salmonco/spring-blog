@@ -51,6 +51,12 @@ public class MainController
   private String fileUploadPath;
   private int r = 0;
 
+  /**
+   * 알럿창
+   * @param notice
+   * @param response
+   * @throws IOException
+   */
   public void alert(String notice, HttpServletResponse response)
     throws IOException
   {
@@ -62,6 +68,11 @@ public class MainController
     out.flush();
   }
 
+  /**
+   * 로그인 확인
+   * @param session
+   * @return
+   */
   public boolean loginCheck(HttpSession session)
   {
     if (session.getAttribute("userId") == null) {
@@ -70,18 +81,34 @@ public class MainController
     return true;
   }
 
+  /**
+   * 홈 페이지
+   * @return
+   */
   @RequestMapping(value = {"/", "home.do"})
   public String home()
   {
     return "home";
   }
 
+  /**
+   * 로그인 페이지
+   * @return
+   */
   @RequestMapping(value = "login.do")
   public String login()
   {
     return "login";
   }
 
+  /**
+   * 로그인 처리
+   * @param req
+   * @param response
+   * @param session
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "loginProcess.do", method = RequestMethod.POST)
   public String loginProcess(HttpServletRequest req, HttpServletResponse response, HttpSession session)
     throws IOException
@@ -101,6 +128,11 @@ public class MainController
     return "login";
   }
 
+  /**
+   * 로그아웃 처리
+   * @param req
+   * @return
+   */
   @RequestMapping(value = "logout.do")
   public String logout(HttpServletRequest req)
   {
@@ -109,12 +141,22 @@ public class MainController
     return "home";
   }
 
+  /**
+   * 회원가입 페이지
+   * @return
+   */
   @RequestMapping(value = "join.do")
   public String join()
   {
     return "join";
   }
 
+  /**
+   * 회원가입 처리
+   * @param req
+   * @param response
+   * @return
+   */
   @RequestMapping(value = "joinProcess.do", method = RequestMethod.POST)
   public String joinProcess(HttpServletRequest req, HttpServletResponse response)
   {
@@ -136,6 +178,11 @@ public class MainController
     return "login";
   }
 
+  /**
+   * 아이디 중복 확인
+   * @param vo
+   * @return
+   */
   @ResponseBody
   @RequestMapping(value= "idCheck.do", method = RequestMethod.POST)
   public int idCheck(MemberVO vo) {
@@ -143,6 +190,16 @@ public class MainController
     return result;
   }
 
+  /**
+   * 게시글 목록 페이지
+   * @param pagevo
+   * @param model
+   * @param nowPage
+   * @param cntPerPage
+   * @param req
+   * @return
+   * @throws Exception
+   */
   @RequestMapping(value = {"index.do", "search.do"})
   public String board(PageVO pagevo, Model model, String nowPage, String cntPerPage, HttpServletRequest req)
     throws Exception
@@ -174,6 +231,13 @@ public class MainController
     return "index";
   }
 
+  /**
+   * 글 작성 페이지
+   * @param response
+   * @param session
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "write.do")
   public String writePage(HttpServletResponse response, HttpSession session)
     throws IOException
@@ -187,6 +251,15 @@ public class MainController
     return "write";
   }
 
+  /**
+   * 글 작성 처리
+   * @param req
+   * @param session
+   * @param response
+   * @param multipartRequest
+   * @return
+   * @throws Exception
+   */
   @RequestMapping(value = "writeProcess.do", method = RequestMethod.POST)
   public String writeProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
     throws Exception
@@ -221,6 +294,16 @@ public class MainController
     return "redirect:/index.do";
   }
 
+  /**
+   * 글 내용 보기 페이지
+   * @param model
+   * @param boardNo
+   * @param session
+   * @param response
+   * @param req
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "viewContent.do", method = RequestMethod.GET)
   public String viewContent(Model model, int boardNo, HttpSession session, HttpServletResponse response, HttpServletRequest req)
     throws IOException
@@ -271,6 +354,12 @@ public class MainController
     return "viewContent";
   }
 
+  /**
+   * 글 수정 페이지
+   * @param model
+   * @param boardNo
+   * @return
+   */
   @RequestMapping(value = "updateContent.do", method = RequestMethod.GET)
   public String updateContent(Model model, int boardNo)
   {
@@ -313,6 +402,13 @@ public class MainController
     return "redirect:/index.do";
   }
 
+  /**
+   * 글 삭제 처리
+   * @param boardNo
+   * @param session
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "deleteProcess.do", method = RequestMethod.GET)
   public String deleteProcess(int boardNo, HttpSession session) throws IOException
   {
@@ -328,6 +424,12 @@ public class MainController
     return "redirect:/index.do";
   }
 
+  /**
+   * 게시글 좋아요 처리
+   * @param boardNo
+   * @param userId
+   * @return
+   */
   @ResponseBody
   @RequestMapping(value = "boardLike.do", method = RequestMethod.POST)
   public HashMap<String, Object> boardLike(int boardNo, String userId)
@@ -356,6 +458,14 @@ public class MainController
     return map;
   }
 
+  /**
+   * 첨부파일 업로드 처리 
+   * @param req
+   * @param response
+   * @param multipartRequest
+   * @return
+   * @throws Exception
+   */
   @RequestMapping(value = "fileUpload.do", method = RequestMethod.POST)
   @ResponseBody
   public String fileUploadFromCKEditor(HttpServletRequest req, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
@@ -397,6 +507,12 @@ public class MainController
     return null;
   }
 
+  /**
+   * 첨부파일 다운로드 처리
+   * @param fileName
+   * @param request
+   * @param response
+   */
   @RequestMapping(value = "fileDownload.do")
   public void ckSubmit(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response)
   {
@@ -419,6 +535,16 @@ public class MainController
     }
   }
 
+  /**
+   * 댓글 작성 페이지
+   * @param redirectAttributes
+   * @param req
+   * @param session
+   * @param response
+   * @param boardNo
+   * @return
+   * @throws Exception
+   */
   @RequestMapping(value = "writeReply.do", method = RequestMethod.POST)
   public String writeReply(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpSession session, HttpServletResponse response, int boardNo)
     throws Exception
@@ -440,6 +566,16 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
+  /**
+   * 댓글 수정 페이지
+   * @param model
+   * @param session
+   * @param req
+   * @param response
+   * @param boardNo
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "updateReply.do", method = RequestMethod.GET)
   public String updateReply(Model model, HttpSession session, HttpServletRequest req, HttpServletResponse response, int boardNo)
     throws IOException
@@ -470,6 +606,17 @@ public class MainController
     return "updateReply";
   }
 
+  /**
+   * 댓글 수정 처리
+   * @param redirectAttributes
+   * @param req
+   * @param response
+   * @param locale
+   * @param model
+   * @param replyNo
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "updateReplyPro.do", method = RequestMethod.POST)
   public String updateReplyPro(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpServletResponse response, Locale locale, Model model, int replyNo)
     throws IOException
@@ -485,6 +632,17 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
+  /**
+   * 댓글 삭제 처리
+   * @param session
+   * @param redirectAttributes
+   * @param response
+   * @param req
+   * @param model
+   * @param boardNo
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "deleteReply.do", method = RequestMethod.GET)
   public String deleteReply(HttpSession session, RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest req, Model model, int boardNo)
     throws IOException
@@ -503,6 +661,15 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
+  /**
+   * 유저 프로필 보기 페이지
+   * @param userId
+   * @param response
+   * @param session
+   * @param model
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "profile.do")
   public String profile(@RequestParam("userId") String userId, HttpServletResponse response, HttpSession session, Model model)
     throws IOException
@@ -521,6 +688,14 @@ public class MainController
     return "profile";
   }
 
+  /**
+   * 유저 프로필 사진 업로드 처리
+   * @param req
+   * @param redirectAttributes
+   * @param multipartRequest
+   * @return
+   * @throws Exception
+   */
   @RequestMapping(value = "profileUpload.do", method = RequestMethod.POST)
   public String profileUpload(HttpServletRequest req, RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest)
     throws Exception
@@ -542,6 +717,12 @@ public class MainController
     return "redirect:/profile.do";
   }
 
+  /**
+   * 유저 프로필 사진 보기 처리
+   * @param userId
+   * @param model
+   * @return
+   */
   @RequestMapping(value = "getProfileName.do", method = RequestMethod.POST)
   public String getProfileName(String userId, Model model)
   {
@@ -552,6 +733,14 @@ public class MainController
     return "common/viewProfile";
   }
 
+  /**
+   * 채팅 페이지
+   * @param session
+   * @param response
+   * @param model
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "chat.do")
   public String chat(HttpSession session, HttpServletResponse response, Model model) throws IOException
   {
@@ -566,6 +755,16 @@ public class MainController
     return "chat";
   }
 
+  /**
+   * 신고 처리
+   * @param reportDate
+   * @param reportTarget
+   * @param reportTitle
+   * @param reportContent
+   * @param req
+   * @return
+   * @throws IOException
+   */
   @RequestMapping(value = "report.do", method = RequestMethod.POST)
   public String report(String reportDate, String reportTarget, String reportTitle, String reportContent, HttpServletRequest req)
     throws IOException
@@ -605,6 +804,11 @@ public class MainController
     return "redirect:" + referer;
   }
 
+  /**
+   * 좋아요 수에 따른 게시글 랭킹
+   * @param model
+   * @return
+   */
   @RequestMapping(value = "rank.do")
   public String rank(Model model)
   {
