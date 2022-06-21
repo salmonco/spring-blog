@@ -26,6 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,19 +70,19 @@ public class MainController
     return true;
   }
 
-  @RequestMapping({"/", "home.do"})
+  @RequestMapping(value = {"/", "home.do"})
   public String home()
   {
     return "home";
   }
 
-  @RequestMapping({"login.do"})
+  @RequestMapping(value = "login.do")
   public String login()
   {
     return "login";
   }
 
-  @RequestMapping(value={"loginProcess.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "loginProcess.do", method = RequestMethod.POST)
   public String loginProcess(HttpServletRequest req, HttpServletResponse response, HttpSession session)
     throws IOException
   {
@@ -100,7 +101,7 @@ public class MainController
     return "login";
   }
 
-  @RequestMapping({"logout.do"})
+  @RequestMapping(value = "logout.do")
   public String logout(HttpServletRequest req)
   {
     HttpSession session = req.getSession();
@@ -108,13 +109,13 @@ public class MainController
     return "home";
   }
 
-  @RequestMapping({"join.do"})
+  @RequestMapping(value = "join.do")
   public String join()
   {
     return "join";
   }
 
-  @RequestMapping(value={"joinProcess.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "joinProcess.do", method = RequestMethod.POST)
   public String joinProcess(HttpServletRequest req, HttpServletResponse response)
   {
     try {
@@ -136,13 +137,13 @@ public class MainController
   }
 
   @ResponseBody
-  @RequestMapping(value={"idCheck.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value= "idCheck.do", method = RequestMethod.POST)
   public int idCheck(MemberVO vo) {
     int result = mainService.idCheck(vo);
     return result;
   }
 
-  @RequestMapping({"index.do", "search.do"})
+  @RequestMapping(value = {"index.do", "search.do"})
   public String board(PageVO pagevo, Model model, String nowPage, String cntPerPage, HttpServletRequest req)
     throws Exception
   {
@@ -173,7 +174,7 @@ public class MainController
     return "index";
   }
 
-  @RequestMapping({"write.do"})
+  @RequestMapping(value = "write.do")
   public String writePage(HttpServletResponse response, HttpSession session)
     throws IOException
   {
@@ -186,7 +187,7 @@ public class MainController
     return "write";
   }
 
-  @RequestMapping(value={"writeProcess.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "writeProcess.do", method = RequestMethod.POST)
   public String writeProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
     throws Exception
   {
@@ -220,7 +221,7 @@ public class MainController
     return "redirect:/index.do";
   }
 
-  @RequestMapping(value={"viewContent.do"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @RequestMapping(value = "viewContent.do", method = RequestMethod.GET)
   public String viewContent(Model model, int boardNo, HttpSession session, HttpServletResponse response, HttpServletRequest req)
     throws IOException
   {
@@ -270,14 +271,14 @@ public class MainController
     return "viewContent";
   }
 
-  @RequestMapping(value={"updateContent.do"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @RequestMapping(value = "updateContent.do", method = RequestMethod.GET)
   public String updateContent(Model model, int boardNo)
   {
     model.addAttribute("content", mainService.viewContent(boardNo));
     return "update";
   }
 
-  @RequestMapping(value={"updateProcess.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "updateProcess.do", method = RequestMethod.POST)
   public String updateProcess(HttpServletRequest req, HttpSession session, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
     throws Exception
   {
@@ -312,7 +313,7 @@ public class MainController
     return "redirect:/index.do";
   }
 
-  @RequestMapping(value={"deleteProcess.do"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @RequestMapping(value = "deleteProcess.do", method = RequestMethod.GET)
   public String deleteProcess(int boardNo, HttpSession session) throws IOException
   {
     mainService.deleteProcess(boardNo);
@@ -328,7 +329,7 @@ public class MainController
   }
 
   @ResponseBody
-  @RequestMapping(value={"boardLike.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "boardLike.do", method = RequestMethod.POST)
   public HashMap<String, Object> boardLike(int boardNo, String userId)
   {
     HashMap<String, Object> hashmap = new HashMap<String, Object>();
@@ -355,7 +356,7 @@ public class MainController
     return map;
   }
 
-  @RequestMapping(value={"fileUpload.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "fileUpload.do", method = RequestMethod.POST)
   @ResponseBody
   public String fileUploadFromCKEditor(HttpServletRequest req, HttpServletResponse response, MultipartHttpServletRequest multipartRequest)
     throws Exception
@@ -396,7 +397,7 @@ public class MainController
     return null;
   }
 
-  @RequestMapping({"fileDownload.do"})
+  @RequestMapping(value = "fileDownload.do")
   public void ckSubmit(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response)
   {
     File file = FileUtilities.getDownloadFile(fileUploadPath, fileName);
@@ -418,7 +419,7 @@ public class MainController
     }
   }
 
-  @RequestMapping(value={"writeReply.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "writeReply.do", method = RequestMethod.POST)
   public String writeReply(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpSession session, HttpServletResponse response, int boardNo)
     throws Exception
   {
@@ -439,7 +440,7 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
-  @RequestMapping(value={"updateReply.do"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @RequestMapping(value = "updateReply.do", method = RequestMethod.GET)
   public String updateReply(Model model, HttpSession session, HttpServletRequest req, HttpServletResponse response, int boardNo)
     throws IOException
   {
@@ -469,7 +470,7 @@ public class MainController
     return "updateReply";
   }
 
-  @RequestMapping(value={"updateReplyPro.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "updateReplyPro.do", method = RequestMethod.POST)
   public String updateReplyPro(RedirectAttributes redirectAttributes, HttpServletRequest req, HttpServletResponse response, Locale locale, Model model, int replyNo)
     throws IOException
   {
@@ -484,7 +485,7 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
-  @RequestMapping(value={"deleteReply.do"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+  @RequestMapping(value = "deleteReply.do", method = RequestMethod.GET)
   public String deleteReply(HttpSession session, RedirectAttributes redirectAttributes, HttpServletResponse response, HttpServletRequest req, Model model, int boardNo)
     throws IOException
   {
@@ -502,7 +503,7 @@ public class MainController
     return "redirect:/viewContent.do";
   }
 
-  @RequestMapping({"profile.do"})
+  @RequestMapping(value = "profile.do")
   public String profile(@RequestParam("userId") String userId, HttpServletResponse response, HttpSession session, Model model)
     throws IOException
   {
@@ -520,7 +521,7 @@ public class MainController
     return "profile";
   }
 
-  @RequestMapping(value={"profileUpload.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "profileUpload.do", method = RequestMethod.POST)
   public String profileUpload(HttpServletRequest req, RedirectAttributes redirectAttributes, MultipartHttpServletRequest multipartRequest)
     throws Exception
   {
@@ -541,7 +542,7 @@ public class MainController
     return "redirect:/profile.do";
   }
 
-  @RequestMapping(value={"getProfileName.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "getProfileName.do", method = RequestMethod.POST)
   public String getProfileName(String userId, Model model)
   {
     String profileName = mainService.selectProfile(userId);
@@ -551,7 +552,7 @@ public class MainController
     return "common/viewProfile";
   }
 
-  @RequestMapping({"chat.do"})
+  @RequestMapping(value = "chat.do")
   public String chat(HttpSession session, HttpServletResponse response, Model model) throws IOException
   {
     response.setCharacterEncoding("UTF-8");
@@ -565,7 +566,7 @@ public class MainController
     return "chat";
   }
 
-  @RequestMapping(value={"report.do"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+  @RequestMapping(value = "report.do", method = RequestMethod.POST)
   public String report(String reportDate, String reportTarget, String reportTitle, String reportContent, HttpServletRequest req)
     throws IOException
   {
@@ -604,7 +605,7 @@ public class MainController
     return "redirect:" + referer;
   }
 
-  @RequestMapping({"rank.do"})
+  @RequestMapping(value = "rank.do")
   public String rank(Model model)
   {
     List<Map<String, Object>> likeRank = (List<Map<String, Object>>) mainService.likeRank();
