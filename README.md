@@ -1,4 +1,4 @@
-# Spring Framework 블로그 만들기 연습
+# Spring Framework 블로그
 ## Spring MVC Project
 * Controller > Service > ServiceImpl > Mapper > Mapper.xml
 
